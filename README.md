@@ -1,3 +1,5 @@
 # hesaplama-arac-
 
-Henüz kod yok. Buraya hesap makinesi veya birim çevirici konacak.
+Yüzde, KDV ekleme ve KDV ayırma. Tek sayfa, kurulum yok.
+
+Açmak için [index.html](index.html).

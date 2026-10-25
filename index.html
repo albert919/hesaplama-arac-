@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hesaplama Aracı</title>
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", sans-serif;
+      background: #f4f7fb;
+      color: #0f172a;
+      display: grid;
+      place-items: center;
+      padding: 24px 16px;
+    }
+    main {
+      width: min(480px, 100%);
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+    }
+    h1 { margin: 0 0 6px; font-size: 1.5rem; }
+    p { margin: 0 0 18px; color: #64748b; }
+    label { display: block; font-size: 0.85rem; margin: 12px 0 6px; font-weight: 650; }
+    input, select, button {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid #cbd5e1;
+      padding: 12px 14px;
+      font: inherit;
+    }
+    button {
+      margin-top: 16px;
+      background: #0f172a;
+      color: white;
+      border: 0;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    output {
+      display: block;
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 12px;
+      background: #ecfeff;
+      color: #155e75;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Hesaplama aracı</h1>
+    <p>Yüzde, KDV ekle veya KDV ayır.</p>
+    <label for="amount">Tutar</label>
+    <input id="amount" type="number" min="0" step="0.01" value="1000" />
+    <label for="rate">Oran (%)</label>
+    <input id="rate" type="number" min="0" step="0.01" value="20" />
+    <label for="mode">İşlem</label>
+    <select id="mode">
+      <option value="percent">Tutarın yüzdesi</option>
+      <option value="add">KDV ekle</option>
+      <option value="extract">KDV dahil tutardan ayır</option>
+    </select>
+    <button id="calc" type="button">Hesapla</button>
+    <output id="out">Sonuç burada görünür.</output>
+  </main>
+  <script>
+    const amountEl = document.getElementById("amount");
+    const rateEl = document.getElementById("rate");
+    const modeEl = document.getElementById("mode");
+    const out = document.getElementById("out");
+    const money = new Intl.NumberFormat("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    function calculate() {
+      const amount = Number(amountEl.value);
+      const rate = Number(rateEl.value);
+      if (!Number.isFinite(amount) || amount < 0 || !Number.isFinite(rate) || rate < 0) {
+        out.textContent = "Geçerli bir tutar ve oran gir.";
+        return;
+      }
+      const ratio = rate / 100;
+      if (modeEl.value === "percent") {
+        out.textContent = `${money.format(amount)} tutarın %${rate} kadarı ${money.format(amount * ratio)}.`;
+      } else if (modeEl.value === "add") {
+        const tax = amount * ratio;
+        out.textContent = `KDV ${money.format(tax)}. Toplam ${money.format(amount + tax)}.`;
+      } else {
+        const net = amount / (1 + ratio);
+        out.textContent = `Net ${money.format(net)}. İçindeki KDV ${money.format(amount - net)}.`;
+      }
+    }
+
+    document.getElementById("calc").addEventListener("click", calculate);
+    calculate();
+  </script>
+</body>
+</html>
